@@ -1,0 +1,25 @@
+
+
+#include<iostream>
+#include<string>    //要包含的头文件
+
+int main()
+{
+    using namespace std;
+
+    string str1;
+    string str2 = "panda";
+    str1 = "lovely";
+
+    string str3;
+    str3 = str1+" "+str2;
+
+    cout<<str3<<endl;
+    cout<<str3.size();  //算的是不加上结束符的长度
+
+    cout<<"Input some words:\n";
+    getline(cin,str3);  //cin作为参数，指出到哪里寻找输入，string对象根据输入自动调节大小
+    cout<<str3;
+
+    return 0;
+}
