@@ -1,0 +1,61 @@
+
+在创建对象的时候，可省略struct。
+形如：
+struct name
+{
+member
+}；
+
+#include<iostream>
+#include<string>
+
+//在定义struct之后创建变量
+struct perk
+{
+    int key_number;
+    char ca[12];
+}xiao_liu,xiao_liao;
+
+//在定影struct之后创建变量并初始化
+struct perks
+{
+    int key_number;
+    char ca[12];
+}xiao_bai=
+{
+    7,
+    "Packard",
+};
+
+//先定义struct，然后在函数中使用
+struct inflatable   //外部申明可悲所有函数使用，内部申明只可被当前函数使用
+{
+    /*std::    是个名称空间标示符，C++标准库中的函数或者对象都是在命名空间std中定义的，
+    所以我们要使用标准函数库中的函数或对象都要使用std来限定。
+    一般来说，std都是要调用C++标准库时，要写上std；*/
+    char name[20];
+    float volum;
+    double price;
+};
+
+int main()
+{
+    using namespace std;
+
+    inflatable guest=   //定义的时候用分号分开，创建对象的时候用逗号分开
+    {
+        "Glorious Gloria",
+        1.88,
+        29.99,
+    };  //以分号最为struct对象初始化的结束
+
+    cout<<"Name: "<<guest.name<<","<<"volum: "<<guest.volum<<"，price: "<<guest.price;
+
+    inflatable pal[2]=  //数组的方式
+    {
+        {
+            "Bambi",0.5,21.99
+        },
+        {
+            "Godzilla",2000,565.99
+        }
