@@ -1,0 +1,3 @@
+
+程序在多个地方需要使用，形如：
+const type name=value;    //能指定类型
