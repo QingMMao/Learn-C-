@@ -1,0 +1,20 @@
+
+形如：
+typeName arrayName[arraySize]
+
+#include<iostream>
+int main()
+{
+    using namespace std;
+
+    //第一种形式
+    int y[3]; //y[3] = {1,2,3};这样是不行的
+    y[0] = 1;
+    y[1] = 2;
+    y[2] = 3;
+
+    //第二种形式
+    int y_1[3] = {10,20,30};
+
+    return 0;
+}
