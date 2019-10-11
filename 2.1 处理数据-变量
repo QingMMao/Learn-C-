@@ -1,0 +1,21 @@
+
+整型（short,int,long），浮点数（float 32位，double 64位，long double 80 96 128位，指数范围是-37~37），无符号类型（不为负），字符类型，进制（十进制dec，八进制oct，十六进制hex）
+#include<climits>    //最大值or最小值等等
+
+
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+    cout.setf(ios_base::fixed,ios_base::floatfield);    //显示完整的数字
+    float tub = 10.0/3.0;
+    double mint = 10.0/3.0;
+    const float million=1.0e6;
+
+    cout<<tub*million<<endl;
+    cout<<mint*million<<endl;
+
+    return 0;
+
+}
