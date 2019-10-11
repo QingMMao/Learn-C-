@@ -1,0 +1,30 @@
+
+使用以'\0'为结尾字符数组
+#include<cstring>提供多种函数
+
+#include<iostream>
+int main()
+{
+    using namespace std;
+
+    //表示字符串的两种形式，分配的长度要>=字符串长度+1
+    char a[8] = {'f','a','t','e','\0'};
+    char b[8] = "Bozo";
+
+    cout<<"I have 10"   //字符串拼接
+    "dogs."<<endl;
+
+    const int Size = 20;
+    char name[Size];
+
+    cin.getline(name,Size); //每次读取一行，将换行符丢掉，加上'\0'。使用简单
+    cout<<name<<endl;
+
+    cin.get(name,Size); //每次读取一行，不丢弃换行符。检查错误简单。
+    cin.get();  //处理换行符
+    cout<<name<<endl;
+    cin.get(name,Size); //每次读取一行，不丢弃换行符
+    cout<<name<<endl;   //不处理换行符的话，直接在输出后结束程序
+
+    return 0;
+}
