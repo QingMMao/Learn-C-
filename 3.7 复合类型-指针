@@ -1,0 +1,205 @@
+使得程序在运行时而不是编译时分配内存。
+a代表值，&a代表值所在的地址；b代表地址，*b代表地址所存储的值。
+
+1.简单的知识
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+
+    int a = 6;
+    int *p_a;
+    int *p_1,b; //申明一个指向int的指针，和一个int型数
+
+    p_a = &a;   //取地址，或者可以在申明的时候初始化：int* p_a = &a;
+
+    cout<<a<<endl;
+    cout<<p_a<<endl;
+
+    *p_a += 1;  //也会改变a的值
+    cout<<a;
+
+    return 0;
+}
+
+2.分配内存
+形如：
+typename pointername = new typename;
+
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+
+    int* a = new int;
+    *a = 6;
+
+    cout<<*a<<","<<a;   //输出值6和所在的位置
+    
+    delete a;   //释放内存，但是不会删除指针本身。与new配对使用。
+
+    return 0;
+}
+
+3.动态数组（动态联编）
+形如：
+typename pointername = new typename [num_elements];
+
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+
+    double *p = new double [3];
+    p[0] = 0.2;
+    p[1] = 0.3;
+    p[2] = 0.4;
+
+    cout<<p[0]<<endl;   //输出的是0.2
+    p = p+1;    //指针向后移动
+    cout<<p[0]<<endl;   //此时输出的是0.3
+
+    p = p-1;    //将指针移动到原来的位置
+    cout<<p[2];     //此时输出的是0.4
+
+    delete [] p;    //如果使用new[]来分配内存，那么delete的时候也要加上[]
+
+    return 0;
+}
+
+4.指针和数组
+
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+
+    int a = 6;
+
+    double wages[3] = {1.0,2.0,3.0};
+    double *p_wages = wages;    //指针指向数组第一个元素的地址
+
+    //一些等价的取数组值的方法
+    cout<<p_wages<<","<<*p_wages<<","<<p_wages[0]<<endl;
+    cout<<wages[1]<<", the same as:"<<*(wages+1);
+
+    return 0;
+}
+
+5.指针和字符串
+#include<iostream>
+#include<cstring>
+
+int main()
+{
+    using namespace std;
+
+    char animal[20] = "bear";
+    char* p_animal;
+
+    cout<<animal<<",address:"<<&animal<<endl; //animal的值和所在地址
+
+    cout<<"Enter an animal name:\n";
+    cin>>animal;
+    p_animal = animal;  //指向的地址是一样的
+    cout<<&animal<<","<<(int*)p_animal<<","<<p_animal<<endl; //如果是char*的指针，将会打印其存储的值
+
+    p_animal = new char[strlen(animal)+1];  //重新分配内存
+    strcpy(p_animal,animal);    //指向不同的地址
+    cout<<&animal<<","<<(int*)p_animal;
+    delete [] p_animal;
+
+    return 0;
+}
+
+//这样也可以
+    char* p_animal = new char [20];
+    cin>>p_animal;
+    cout<<(int*)p_animal<<","<<p_animal;
+
+6.new创建动态结构
+
+#include<iostream>
+
+struct inflatable
+{
+    char name[20];
+    float volume;
+    double price;
+};
+
+int main()
+{
+    using namespace std;
+
+    inflatable* ps = new inflatable;
+
+    cout<<"Enter name:\n";
+    cin.get(ps->name,20);   //限制输入的长度
+    cout<<"Enter volume:\n";
+    cin>>(*ps).volume;      //另一种获取方式
+    cout<<"Enter price:\n";
+    cin>>ps->price;
+
+    cout<<"Name:"<<(*ps).name<<endl;
+    cout<<"Volume:"<<ps->volume<<endl;
+    cout<<"Price:"<<ps->price;
+
+    delete ps;
+
+
+    return 0;
+}
+
+7.new是如何节约内存的
+
+#include<iostream>
+#include<cstring>
+
+using namespace std;
+
+char* getname(void);
+
+int main()
+{
+    char* name;
+
+    /*获得之后，打印，然后释放内存，可重复使用。
+    若是数组的话，要事先分配好所有内存，造成很大的浪费。*/
+    name = getname();
+    cout<<name<<",address:"<<(int*)name<<endl;
+    delete name;
+
+    name = getname();
+    cout<<name<<",address:"<<(int*)name<<endl;
+    delete name;
+
+    return 0;
+}
+
+char* getname()
+{
+    /*先用字符数组来存储输入的字符串，
+    再将字符串copy到pn所指的地址里，
+    将pn返回。*/
+    char temp[80];
+    cout<<"Enter name:\n";
+    cin>>temp;
+    char* pn = new char[strlen(temp)+1];
+    strcpy(pn,temp);
+
+    return pn;
+}
+
+8.自动存储、静态存储和动态存储
+根据用于分配内存的方法。
+  8.1 自动存储
+    内存在所在的函数被调用时自动产生，函数结束时自动消亡。是一个局部变量。
+  8.2 静态存储
+    在函数外定义，或者使用static。
+  8.3 动态存储
+    new和delete。
