@@ -1,0 +1,75 @@
+1.基本格式
+
+#include<iostream>
+#include<string>
+
+int main()
+{
+    using namespace std;
+
+    cout<<"Enter a word:\n";
+    string word;
+    cin>>word;
+
+    //允许时用时定义
+    for (int i=word.size()-1;i>=0;i--)
+    {
+        cout<<word[i];
+    }
+
+    return 0;
+}
+
+2.指针的++和--操作
+
+#include<iostream>
+#include<string>
+
+int main()
+{
+    using namespace std;
+
+    int arr[3] = {10,20,30};
+    int* p_arr = arr;   //指针代表arr[0]代表的地址
+
+    ++p_arr;   //指针加一，pt = pt+(sizeof(type_p_arr))*1
+    cout<<p_arr<<","<<*p_arr<<endl;
+    p_arr--;   //指针加一，pt = pt-(sizeof(type_p_arr))*1
+    cout<<p_arr<<","<<*p_arr<<endl;
+
+    cout<<*++p_arr<<endl; //先将指针加一，再取值
+    --p_arr;
+
+    cout<<++*p_arr<<endl; //先将值取出来，再对值加一
+
+    cout<<(*p_arr)++<<endl;   //先将值取出来，再对值加一
+
+    cout<<*p_arr++<<","<<p_arr<<endl; //先将指针加一，再取值
+
+    return 0;
+}
+
+3.复合语句
+
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+
+    int x = 20; //定义初始的x
+    cout<<x<<endl;
+
+    {
+        cout<<x<<endl;  //输出初始的x
+        int x = 100;    //这里面的x和先前的x占用的内存不一样，在此后的这一语句块里面，用的是新赋值的x
+        cout<<x<<endl;
+        int y = 30;
+        cout<<y<<endl;
+    }
+//    cout<<y<<endl;  //随着语句块的结束而消亡，是不合法的
+    cout<<x<<endl;
+
+    return 0;
+}
+
