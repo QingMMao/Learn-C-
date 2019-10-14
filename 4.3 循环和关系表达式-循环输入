@@ -1,0 +1,24 @@
+cin会忽略空格和换行符。
+逐个读取字符可用cin.get()
+
+#include<iostream>
+
+int main()
+{
+    using namespace std;
+
+    char ch;
+    cout<<"Enter characters;enter # to quit:\n";
+    cin.get(ch);    //可以获得空格
+    while(ch!='#')
+    {
+        cout<<ch;
+        cin.get(ch);
+    }
+
+    return 0;
+}
+
+    //这样也行
+    int ch;
+    ch = cin.get(); 
