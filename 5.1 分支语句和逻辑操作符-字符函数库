@@ -1,0 +1,14 @@
+字符函数的原型在头文件cctype中
+isalnum() 字母或者数字
+isalpha() 字母
+isblank() 空格或者水平制表符
+iscntrl() 控制字符
+isdigit() 数字
+islower() 小写字母
+isupper() 大小字母
+isprint() 打印字符（包括空格）
+ispunct() 标点符号
+isspace() 空白字符（空格，换行符，回车，水平制表符，垂直制表符或者进纸）
+isxdigit()  十六进制数字
+tolower() 如果是大小字母，转换为小写字母
+toupper() 如果是小写字母，转换为大写字母
