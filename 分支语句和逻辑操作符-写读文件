@@ -1,0 +1,45 @@
+1.向文件写入
+包含头文件fstream，它定义了一个用于处理输出的ofstream类。使用完文件后，用close()关闭
+
+#include<iostream>
+#include<fstream>
+
+int main()
+{
+    using namespace std;
+
+    char automobile[50];
+    int year;
+    double a;
+
+    ofstream outFile;   //自己命名
+    outFile.open("test.txt");   //有的话，打开，没有的话，创建。这时，outFile就和文件关联起来，之后往里写东西不需要指明文件，关掉的时候也不需要指明。
+    cout<<"Enter area:\n";
+    cin.getline(automobile,50);
+    cout<<"Year:\n";
+    cin>>year;
+    cout<<"Price:\n";
+    cin>>a;
+
+    cout<<fixed;    //用一般的方式输出浮点数
+    cout.precision(2);  //返回当前的浮点数精度值
+    cout.setf(ios_base::showpoint); //添加格式标志, 返回所有标志的原本状态.
+    cout<<automobile<<endl;
+    cout<<year<<endl;
+    cout<<a<<endl;
+
+    //往“test.txt”里写数据
+    outFile<<fixed;
+    outFile.precision(2);
+    outFile.setf(ios_base::showpoint);
+    outFile<<automobile<<endl;
+    outFile<<year<<endl;
+    outFile<<a<<endl;
+
+    outFile.close();    //使用完要关闭
+
+    return 0;
+}
+
+
+
