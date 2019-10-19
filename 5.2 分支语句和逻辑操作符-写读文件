@@ -41,5 +41,72 @@ int main()
     return 0;
 }
 
+2.读文件
+包含头文件fstream。结合open和close打开和关闭文件。结合使用cin和eof()、fail()判断输入是否成功。
+
+#include<iostream>
+#include<fstream>
+#include<cstdlib>   //为了使用exit()
+
+const int length=60;
+int main()
+{
+    using namespace std;
+
+    char filename[length];
+    ifstream inFile;    //自己命名
+
+    cout<<"Enter name of file:\n";
+    cin.getline(filename,length);   //需要用户自己输入想要读取的文件名
+    inFile.open(filename);
+
+    if (!inFile.is_open())  //如果打开不成功，给出提示
+    {
+        cout<<"Could not open the file "<< filename<<endl;
+        cout<<"Program terminating.\n";
+        exit(EXIT_FAILURE);
+    }
+
+    double value;
+    double sum = 0.0;
+    int count = 0;
+
+    inFile>>value;  //逐行（逐空格）获得得值
+    while (inFile.good())   //goo()指出最后一次读取输入的操作是否成功
+    {
+        cout<<value<<endl;
+        count++;
+        sum += value;
+        inFile>>value;
+    }
+    if (inFile.eof())   //到文件尾
+    {
+        cout<<"End of file reached.\n";
+    }
+    else if(inFile.fail())  //数据匹配
+    {
+        cout<<"Input terminated by data mismatch.\n";
+    }
+    else    //其他原因
+    {
+        cout<<"Input terminated for unknown reason.\n";
+    }
+    if (count==0)
+    {
+        cout<<"No data processed.\n";
+    }
+    else    //输出计算的值
+    {
+        cout<<"Count:"<< count<<endl;
+        cout<<"Sum:"<< sum<<endl;
+        cout<<"Average:"<< sum/count<<endl;
+    }
+
+    inFile.close();
+
+    return 0;
+}
+
+
 
 
