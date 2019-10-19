@@ -1,0 +1,52 @@
+1.创建自己的函数需要：定义、提供原型和调用
+2.定义函数：分为有返回值和无返回值的
+有返回值的：
+typename functionName(paramlist)
+{
+  statements
+  return value;
+}
+无返回值的：
+void functionName(paramlist)
+{
+  statements
+}
+3.函数原型
+描述了函数到编译器的接口。C++允许将一个程序放在多个文件中，单独编译这些文件，然后再将它们组合起来。
+（1）编译器正确处理函数返回值
+（2）编译器检查时用的参数数目是否正确
+（3）编译器检查使用的参数类型是否正确
+4.多个参数
+调用函数的时候，传递多个参数，只需将参数用逗号分开即可
+
+
+#include<iostream>
+
+long double probability(unsigned numbers,unsigned picks);
+
+int main()
+{
+    using namespace std;
+
+    double total,choices;
+    cout<<"Enter total and choices:\n";
+    while ((cin>>total>>choices) && choices<=total) //接收两次输入，如果输入不合法或者不满足<=的条件，就跳出循环
+    {
+        cout<<"Compute:\n";
+        cout<<probability(total,choices);
+        cout<<"Next two numbers:)q to qiut\n";
+    }
+
+    return 0;
+}
+
+long double probability(unsigned numbers,unsigned picks)
+{
+    long double res = 1.0;
+    for (;picks>0;numbers--,picks--)
+    {
+        res = res*numbers/picks;
+    }
+    return res;
+}
+
