@@ -1,0 +1,18 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+int main()
+{
+    char a[15] = "abcdef";
+    char* str = "hijklm";
+
+    //函数可以利用循环依次检查字符串中的每个字符，直到末尾。
+    //计算长度的时候，输出都是6
+    cout<<a<<endl;  //输出abcdef
+    cout<<strlen(a)<<endl;
+    cout<<str<<endl;    //输出hijklm
+    cout<<strlen(str)<<endl;
+    cout<<strlen("abcdef");
+
+    return 0;
+}
