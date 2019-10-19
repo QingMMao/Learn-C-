@@ -1,0 +1,7 @@
+主函数中有以下代码：
+int data[3][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12}};
+int total = sum(data,3);
+其中，sum可以申明如下：
+int sum(int (*arr2)[4],int size);
+或者
+int sum(int arr2[][4],int size);
