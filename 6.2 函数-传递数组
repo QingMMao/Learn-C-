@@ -1,0 +1,42 @@
+1.传递数组实例
+
+#include<iostream>
+
+const int ArrSize = 8;
+
+int sum_arr(int arr[],int n);
+using namespace std;
+int main()
+{
+
+    int cookies[ArrSize] = {1,2,3,4,5,6,7,8};
+
+    int sum = sum_arr(cookies,ArrSize); //数组传递的是第一个元素的首地址
+
+    cout<<"Total:"<< sum<<endl;
+
+    return 0;
+}
+
+int sum_arr(int arr[],int m)    //传递的参数名可以不一致
+{
+    int total = 0;
+    for (int i=0;i<m;i++)
+    {
+        total += arr[i];
+    }
+    return total;
+}
+
+2.保护数组
+因为传递的是地址，所以很可能在被调用函数中被改变，用const来避免这一问题。
+例如：
+void show_arr(const int arr[],int n);
+void show_arr(const int arr[],int n)
+{
+    for (int i=0;i<n;i++)
+    {
+        cout<<"Proprety #"<<(i+1)<<":$";
+        cout<<arr[i]<<endl;
+    }
+}
