@@ -1,0 +1,5 @@
+int a = 29;  //可以修改age的值
+const int* p = &a;  //不可以修改*p的值，但是可以修改p的值
+double b = 2.33;
+const double * const p1 = &b; //p1和*p1都是const类型，都不可修改
+将指针申明为const:（1）可以避免由于无意间修改数据而导致编程错误；能够处理const非const实参。
