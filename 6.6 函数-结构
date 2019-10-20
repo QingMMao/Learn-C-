@@ -1,0 +1,90 @@
+当结构比较小的时候，按值传递最合理；当结构比较大的时候，传递结构的地址，使用指针来访问结构的内容。
+1.传递值
+以计算时间为例，每一天需要多少时间，计算时间之和。
+#include<iostream>
+
+struct travel_time
+{
+    int hours;
+    int mins;
+};
+const int Mins_per_hour = 60;
+travel_time sum(travel_time t1,travel_time t2);
+void show_time(travel_time t);
+using namespace std;
+
+int main()
+{
+    travel_time day1 = {5,45};
+    travel_time day2 = {4,55};
+
+    travel_time total = sum(day1,day2);
+    cout<<"Two-day total:\n";
+    show_time(total);
+
+    return 0;
+}
+
+travel_time sum(travel_time t1,travel_time t2)
+{
+    travel_time res;
+
+    res.mins = (t1.mins+t2.mins)%Mins_per_hour;
+    res.hours = (t1.hours+t2.hours)+(t1.mins+t2.mins)/Mins_per_hour;
+
+    return res;
+}
+
+void show_time(travel_time t)
+{
+    cout<<t.hours <<" hours and "<< t.mins <<" minutes."<<endl;
+}
+
+2.传递地址
+一笛卡尔坐标转换为极坐标为例。
+
+#include<iostream>
+#include<cmath>
+
+//以极坐标的方式表达位置
+struct polar
+{
+    double distance;
+    double angle;
+};
+
+//以在x,y轴相对原点的偏移量来表达位置
+struct rect
+{
+    double x;
+    double y;
+};
+
+void rect_to_polar(const rect* pxy,polar* pda);
+void show_polar(const polar* pda);
+
+using namespace std;
+
+int main()
+{
+    rect rplace = {30,40};
+    polar pplace;
+
+    rect_to_polar(&rplace,&pplace);
+    show_polar(&pplace);
+
+    return 0;
+}
+
+void rect_to_polar(const rect* pxy,polar* pda)
+{
+    pda->distance = sqrt(pxy->x*pxy->x+pxy->y*pxy->y);
+    pda->angle = atan2(pxy->y,pxy->x);
+}
+
+void show_polar(const polar* pda)
+{
+    const double red_to_deg = 57.29577951;
+    cout<<"Distance: "<<pda->distance<<" and angel: "<<pda->angle*red_to_deg<<endl;
+}
+
