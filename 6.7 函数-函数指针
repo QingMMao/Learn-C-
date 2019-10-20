@@ -1,0 +1,41 @@
+函数的地址是存储其机器语言，可以编写将另一个函数的地址作为函数的参数。
+
+#include<iostream>
+
+double betsy(int);
+double pam(int);
+
+void estimate(int lines,double (*pf)(int)); //(*pf)指的是调用哪一个函数
+
+using namespace std;
+
+int main()
+{
+    int code;
+
+    cout<<"Enter lines of code:\n";
+    cin>>code;
+    
+    cout<<"Betsy's estimate:\n";
+    estimate(code,betsy);   //这里指明调用哪一个函数
+    cout<<"Pam's estimate:\n";
+    estimate(code,pam);
+
+    return 0;
+}
+
+double betsy(int lines)
+{
+    return 0.05*lines;
+}
+
+double pam(int lines)
+{
+    return 0.03*lines+0.0004*lines*lines;
+}
+
+void estimate(int lines,double (*pf)(int))
+{
+    cout<<lines<<" lines will take ";
+    cout<<(*pf)(lines)<<" hour(s)\n";
+}
