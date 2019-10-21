@@ -22,7 +22,7 @@ int main()
     return 0;
 }
 
-char* left(const char* str,int n)
+char* left(const char* str,int n)   //这里不需要再设置默认参数
 {
     if (n<0)
     {
