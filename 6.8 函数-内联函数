@@ -1,0 +1,23 @@
+内联函数为了提高运行速度，编译器使用相应的函数代码替换函数调用，程序无需跳到另外一个位置执行代码然后再跳回来。因此，内联函数的执行速度快些，占用的内存
+多些。在某一函数频繁被调用时，适用。使用内联函数的时候，按值传递参数，函数首次被使用之前出现的整个函数充当原型，在函数声明前加关键字inline，在函数定义
+前加关键字Inline。性能优于C语言中的宏定义函数。
+
+#include<iostream>
+inline double square(double x)
+{
+    return x*x;
+}
+
+int main()
+{
+    using namespace std;
+
+    double a,b;
+    double c = 13.0;
+
+    a = square(5.0);
+    b = square(4.5+7.5);    //可以传递int或float型，然后程序自动转换为double型
+    cout<<"a: "<<a<<", b: "<<b<<", c: "<<c<<endl;
+
+    return 0;
+}
