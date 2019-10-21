@@ -1,0 +1,111 @@
+函数模板是通用的函数描述，使用通用类型来定义函数。形如：template<class any>。
+需要对不同类型使用同一种算法的函数时，使用模板。
+
+1.交换两个不同类型的数据
+#include<iostream>
+using namespace std;
+
+//这里需要申明
+template <class any>
+void MySwap(any &a,any &b);
+
+int main()
+{
+    int a = 10;
+    int b = 30;
+    cout<<"Initial:"<<a<<","<<b<<endl;
+    MySwap(a,b);
+    cout<<"After swap:"<<a<<","<<b<<endl;
+
+    double x = 8.9;
+    double y = 7.688;
+    cout<<"Initial:"<<x<<","<<y<<endl;
+    MySwap(x,y);
+    cout<<"After swap:"<<x<<","<<y<<endl;
+
+    return 0;
+}
+
+//template里面可以与前面保持一致或者不保持一致
+template <typename Any>
+void MySwap(Any &a,Any &b)
+{
+    a = a+b;
+    b = a-b;
+    a = a-b;
+}
+
+2.交换结构体中特定的成员，需要使用显示具体化
+
+#include<iostream>
+using namespace std;
+
+//这里需要申明
+template <class any>
+void MySwap(any &a,any &b);
+
+struct job
+{
+    char name[40];
+    double salary;
+    int floor;
+};
+
+//显示具体化,表示里面交换的类型是job
+template <> void MySwap<job>(job &j1,job &j2);
+
+void show(job &j);
+
+int main()
+{
+    int a = 10;
+    int b = 30;
+    cout<<"Initial:"<<a<<","<<b<<endl;
+    MySwap(a,b);
+    cout<<"After swap:"<<a<<","<<b<<endl;
+
+    job sue = {"Susan",73000,7};
+    job sidney = {"Sidney",90000,25};
+    cout<<"Initial:"<<endl;
+    show(sue);
+    show(sidney);
+    MySwap(sue,sidney);
+    cout<<"After swap:"<<endl;
+    show(sue);
+    show(sidney);
+
+    return 0;
+}
+
+//template里面可以与前面保持一致或者不保持一致
+template <typename Any>
+void MySwap(Any &a,Any &b)
+{
+    a = a+b;
+    b = a-b;
+    a = a-b;
+}
+
+//具体来实现两个的交换
+template <> void MySwap<job>(job &j1,job &j2)
+{
+    //交换薪水
+    j1.salary = j1.salary+j2.salary;
+    j2.salary = j1.salary-j2.salary;
+    j1.salary = j1.salary-j2.salary;
+    //交换楼层
+    j1.floor = j1.floor^j2.floor;
+    j2.floor = j2.floor^j1.floor;
+    j1.floor = j1.floor^j2.floor;
+}
+
+void show(job &j)
+{
+    cout<<j.name<<","<<j.salary<<","<<j.floor<<endl;
+}
+
+3.实例化和具体化
+函数模板不生成函数定义，是用于生成函数定义的方案，编译器使用模板为特定类型生成函数定义时，得到的是模板实例。使用int的模板实例是定义函数。
+下面两个形式都可以
+template <> void MySwap(job &j1,job &j2)
+template <> void MySwap<job>(job &j1,job &j2)
