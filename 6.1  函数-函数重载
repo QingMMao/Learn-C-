@@ -1,0 +1,84 @@
+函数多态能使用多个同名的函数，利用上下文来确定重载函数的版本。函数重载的关键是函数的参数列表（特征标）。
+将非const复制给const是合法的。
+long gront(int n,float m)
+int gront(int n,float m)  //是不合法的
+int gront(float n,int m)  //是合法的
+
+仅当函数基本上执行相同的任务，但使用不同形式的数据时，采用函数重载。
+
+#include<iostream>
+using namespace std;
+
+unsigned long left(unsigned long num,unsigned ct);
+char * left(const char* str,int n=1);
+
+int main()
+{
+    char* trip = "Students";
+    unsigned long n = 12345678;
+    int i;
+    char* temp;
+
+    for (i=1;i<10;i++)
+    {
+        cout<<left(n,i)<<endl;
+        temp = left(trip,i);
+        cout<<temp<<endl;
+        delete [] temp;
+    }
+    return 0;
+}
+
+unsigned long left(unsigned long num,unsigned ct)
+{
+    int digits = 0;
+    unsigned long n = num;
+
+    if (ct==0 || num==0)
+    {
+        return 0;
+    }
+
+    while (num) //数有多少位
+    {
+        digits++;
+        num = num/10;
+    }
+
+    if (digits>ct)  //位数够了
+    {
+        ct = digits-ct;
+        while (ct)
+        {
+            n = n/10;
+            ct--;
+        }
+        return n;
+    }
+    else    //位数不够，直接返回
+    {
+        return n;
+    }
+
+}
+
+char * left(const char* str,int n)
+{
+    if (n<0)
+    {
+        n = 0;
+    }
+
+    char *p = new char[n+1];
+    int i;
+    for (i=0;i<n && str[i];i++)
+    {
+        p[i] = str[i];
+    }
+    if (i<=n)   //直接结束符
+    {
+        p[i] = '\0';
+    }
+    return p;
+
+}
