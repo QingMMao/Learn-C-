@@ -1,5 +1,5 @@
 函数多态能使用多个同名的函数，利用上下文来确定重载函数的版本。函数重载的关键是函数的参数列表（特征标）。
-将非const复制给const是合法的。
+将非const复制给const是合法的。const和非const的区别只适用于指针和引用指向的数据类型。编译器选择执行转换类型最少的函数。 
 long gront(int n,float m)
 int gront(int n,float m)  //是不合法的
 int gront(float n,int m)  //是合法的
