@@ -1,0 +1,126 @@
+1.引用变量是一种复合类型，引用是已定义的变量的别名，通过将引用变量用作参数，函数使用原始数据，而不用拷贝。&符号还可以用来申明引用。
+适用：程序猿能够修改调用函数中的数据对象；通过传递引用而不是整个数据对象，来提高程序的运行速度。
+如果数据对象是数组，只能使用指针。
+如果数据对象是结构，使用指针或引用。
+如果数据对象是类对象，使用引用。
+
+
+（1）
+#include<iostream>
+
+using namespace std;
+
+int main()
+{
+    int rats = 101;
+    int & rodents = rats;   //指向相同的值和内存单元
+
+    cout<<rats<<","<<rodents<<endl;
+    rodents++;  //一个变量值的改变将会影响另一个变量的值
+    cout<<rats<<","<<rodents<<endl;
+
+    cout<<&rats<<","<<&rodents<<endl;
+
+    int bunnies = 50;
+    rodents = 50;
+
+    //值虽然改变了，地址没变
+    cout<<rats<<","<<rodents<<","<<bunnies<<endl;
+    cout<<&rats<<","<<&rodents<<","<<&bunnies<<endl;
+
+    return 0;
+}
+
+（2）另一个例子带有指针的例子
+#include<iostream>
+
+using namespace std;
+
+int main()
+{
+    int rats = 101;
+    int* pt = &rats;
+    int & rodents = *pt;    //rodent指向的是rats
+
+    cout<<pt<<","<<*pt<<","<<&rodents<<","<<rodents<<endl;
+
+    int bunnies = 50;
+    pt = &bunnies;  //并不会改变rodent的值
+
+    cout<<pt<<","<<*pt<<","<<&rodents<<","<<rodents<<endl;
+
+    rodents++;  //会改变rats的值
+    cout<<&rats<<","<<rats<<","<<&rodents<<","<<rodents<<endl;
+    return 0;
+}
+
+2.引用作函数参数，交换两个int数的例子：
+#include<iostream>
+
+using namespace std;
+void swapr(int & a,int & b);
+
+int main()
+{
+    int x = 100;
+    int y = 300;
+
+    cout<<x<<","<<y<<endl;
+    swapr(x,y);
+    cout<<"After swap:\n";
+    cout<<x<<","<<y<<endl;
+
+    return 0;
+}
+
+void swapr(int & a,int & b)
+{
+    int temp;
+
+    a = a^b;
+    b = b^a;
+    a = a^b;
+}
+
+3.引用非常适合用于结构和类
+
+#include<iostream>
+using namespace std;
+
+struct sysop
+{
+    char name[26];
+    char quote[64];
+    int used;
+};
+
+//const表明，不能使用返回的引用来直接修改它指向的结构。函数前的&表明，不需要拷贝到临时区域，而是直接返回。
+const sysop & use(sysop & sysopref);
+
+int main()
+{
+    sysop looper =
+    {
+        "Rick\"Fortran\"Looper",
+        "I'm a goto kind of guy.",
+        0
+    };
+    use(looper);    //将结构looper按引用传递给use()函数，sysopref就是looper的别名
+    cout<<looper.used<<endl;
+    sysop copycat;
+    copycat = use(looper);  //looper就直接复制到copycat中
+    cout<<looper.used<<endl;
+    cout<<copycat.used<<endl;
+    cout<<use(looper).used<<endl;
+
+    return 0;
+}
+
+const sysop & use(sysop & sysopref)
+{
+    cout<<sysopref.name<<endl;
+    cout<<sysopref.quote<<endl;
+    sysopref.used++;
+    return sysopref;
+}
+
