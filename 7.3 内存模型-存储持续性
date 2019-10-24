@@ -1,0 +1,112 @@
+1.自动存储持续性
+在定义时分配内存，在所在程序结束时自动释放。没有链接性。
+（1）自动变量初始化：在申明的时候。
+（2）使用堆栈（后进先出）存储
+（3）寄存器变量：使用register关键字，告知编译器，用cpu的寄存器而不是堆栈来存储变量（如果没有空的寄存器了，还是存储在堆栈中）。
+    存储在寄存器中的变量没有地址
+2.静态存储持续性
+通过关键字static来申明，在程序的整个运行中都存在。具有外部链接性、内部链接性和无链接性。
+分配固定的内存块来存储所有的静态变量，默认初始化值为0。只能使用常量表达式来申明静态变量。
+（1）外部链接性：在代码块的外部申明。
+（2）内部链接性：在代码块的外部用static申明。
+（3）无链接性：在代码块的内部用static申明。
+
+#include<iostream>
+using namespace std;
+
+double a = 0.3;
+
+void update(double dt);
+void local();
+
+int main()
+{
+    cout<<"Global a is: "<<a<<", address:"<<&a<<endl;
+    update(a);
+    cout<<"Global a is: "<<a<<", address:"<<&a<<endl;
+    local();
+    cout<<"Global a is :"<<a<<", address:"<<&a<<endl;
+
+    return 0;
+}
+
+void update(double dt)
+{
+    extern double a;    //extern申明使用外部变量，没有的话使用的是这一代码块分配的内存，初始化值不确定
+    a += dt;    //相当于全局的a的2倍
+    cout<<"Updating global a to: "<<a<<", address:"<<&a<<endl;
+}
+
+void local()
+{
+    double a = 0.8;
+    cout<<"Local a: "<<a<<", address:"<<&a<<endl;
+    cout<<"Global a: "<<::a<<", address:"<<&::a<<endl;
+}
+
+3.动态存储持续性
+动态内存由new和free控制，不由作用域和链接性控制。
+new负责在堆中找到一个能够满足要求的内存块，布局new可以指定要使用的位置。
+
+#include<iostream>
+#include<new>
+using namespace std;
+
+const int BUF = 512;
+const int N = 5;
+char buffer[BUF];
+
+int main()
+{
+    double *pd1,*pd2;
+    int i;
+    cout<<"Calling new and plcement new:\n";
+    pd1 = new double[N];    //存储在堆栈中
+    pd2 = new (buffer) double[N];   //存储在buffer字符数组中，不用delete
+    for(i=0;i<N;i++)
+    {
+        pd2[i] = pd1[i] = 1000+20.0*i;
+    }
+    cout<<"Buffer address:\n"<<"heap: "<<pd1<<", static: "<<(void *)buffer<<endl;
+    //这里可以看出分别存储的地址
+    for (i = 0;i<N;i++)
+    {
+        cout<<pd1[i]<<", address: "<<&pd1[i]<<";  ";
+        cout<<pd2[i]<<", address: "<<&pd2[i]<<endl;
+    }
+
+    double *pd3,*pd4;
+    cout<<"Calling new and plcement new a secon time:\n";
+    pd3 = new double[N];    //堆栈被pd1占用了一部分，pd3接着使用后面的地址
+    pd4 = new (buffer) double[N];   //之前的pd2被pd4的值覆盖了
+    for(i=0;i<N;i++)
+    {
+        pd4[i] = pd3[i] = 1000+30.0*i;
+    }
+    cout<<"Buffer address:\n"<<"heap: "<<pd3<<", static: "<<(void *)buffer<<endl;
+    for (i = 0;i<N;i++)
+    {
+        cout<<pd3[i]<<", address: "<<&pd3[i]<<";  ";
+        cout<<pd4[i]<<", address: "<<&pd4[i]<<endl;
+    }
+
+    delete [] pd1;
+    pd1 = new double[N];    //释放pd1后，它的地址被空出来，之后再new的话，可以用被释放的地址
+    pd2 = new (buffer+N*(sizeof(double))) double[N];    //地址的其实为buffer的偏移量
+    for(i=0;i<N;i++)
+    {
+        pd2[i] = pd1[i] = 1000+20.0*i;
+    }
+    cout<<"Buffer address:\n"<<"heap: "<<pd3<<", static: "<<(void *)buffer<<endl;
+    for (i = 0;i<N;i++)
+    {
+        cout<<pd1[i]<<", address: "<<&pd1[i]<<";  ";
+        cout<<pd2[i]<<", address: "<<&pd2[i]<<endl;
+    }
+
+    delete [] pd1;
+    delete [] pd3;
+
+    return 0;
+
+}
