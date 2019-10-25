@@ -1,0 +1,160 @@
+1.传统的：每个声明区域都可以生命名称。
+名称空间：一个空间名称中的名称不会与另外一个名称空间的相同名称发生冲突，同时允许程序的其他部分使用该名称空间中声明的东西。
+全局名称空间：对应于文件级声明区域。
+2.名称空间可以是全局的，也可以位于另一个名称空间中，但不能位于代码块中。所以，在名称空间中的名称具有外部链接性。
+namespace Jack
+{
+    double pail;
+    void fetch();
+    int pal;
+}
+
+namespace Jill
+{
+    double bucket(double n){...}
+    double fetch;
+    int pal;
+}
+可以嵌套
+namespace elements
+{
+    namespace fire
+    {
+        int flame;
+    }
+    float water;
+}
+
+flame指的是，elements::fire::flame
+
+可以用未命名的名称空间，在文件内使用
+namespace 
+{
+    int ice;
+}
+3.using 声明将特定的名称添加到它所属的声明区域中，例如using Jill::Fetch，它也将覆盖同名的全局变量。
+using编译指令使所有的名称都可用，例如using namesapce Jack，。
+4.一个例子
+
+首先，创建头文件
+namespace pers
+{
+    const int LEN=40;
+    struct Person
+    {
+        char fname[LEN];
+        char lname[LEN];
+    };
+    void getPreson(Person &);
+    void showPerson(const Person &);
+}
+
+namespace debts
+{
+    using namespace pers;
+    struct Debt
+    {
+        Person name;
+        double amount;
+    };
+    void getDebt(Debt &);
+    void showDebt(const Debt &);
+    double sumDebts(const Debt ar[],int n);
+}
+
+然后，写函数原型
+#include<iostream>
+#include"names.h"
+
+namespace pers
+{
+    using std::cout;
+    using std::cin;
+    void getPerson(Person & rp)
+    {
+        cout<<"Enter first name: ";
+        cin>>rp.fname;
+        cout<<"Enter last name: ";
+        cin>>rp.lname;
+    }
+    void showPerson(const Person & rp)
+    {
+        std::cout<<rp.lname<<" , "<<rp.fname<<std::endl;
+    }
+}
+
+namespace debts
+{
+    void getDebt(Debt & rd)
+    {
+        getPerson(rd.name);
+        std::cout<<"Enter debt: ";
+        std::cin>>rd.amount;
+    }
+    void showDebt(const Debt & rd)
+    {
+        showPerson(rd.name);
+        std::cout<<": $"<<rd.amount<<std::endl;
+    }
+    double sumDebts(const Debt ar[],int n)
+    {
+        double total=0;
+        for (int i=0;i<n;i++)
+        {
+            total += ar[i].amount;
+        }
+        return total;
+    }
+}
+
+最后，调用函数
+#include<iostream>
+#include"names.h"
+
+void other(void);
+void another(void);
+
+int main()
+{
+    using debts::Debt;
+    using debts::showDebt;
+    Debt golf = {{"Benny","Goatsniff"},120.0};
+    showDebt(golf);
+    other();
+    another();
+
+    return 0;
+}
+
+void other()
+{
+    using std::cout;
+    using std::endl;
+
+    using namespace debts;
+    Person dg = {"Doodles","Glister"};
+    showPerson(dg);
+    cout<<endl;
+    Debt zippy[3];
+
+    int i;
+    for (i=0;i<3;i++)
+    {
+        getDebt(zippy[i]);
+    }
+    for (i=0;i<3;i++)
+    {
+        showDebt(zippy[i]);
+    }
+    cout<<"Total debt: $"<<sumDebts(zippy,3)<<endl;
+
+    return;
+}
+
+void another(void)
+{
+    using pers::Person;
+    Person collector = {"Milo","Rightshift"};
+    pers::showPerson(collector);
+    std::cout<<std::endl;
+}
