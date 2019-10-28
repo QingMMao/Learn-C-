@@ -1,0 +1,275 @@
+1.类将数据表示和操纵数据的方法组合成一个整洁的包。类的设计将公有接口和实现细节分开。类对象的默认访问控制为private类。（struct的默认是public）
+类申明：以数据成员的方式描述数据部分，以成员函数的方式描述公有接口。
+类方法定义：描述如何实现类成员函数。
+2.以下是模拟股票买卖的程序：
+
+#include<iostream>
+#include<cstring>
+
+class Stock
+{
+private:
+    char company[30];   //手持股票属于哪家公司
+    int shares;         //手持股票数
+    double share_val;   //每一股的价格
+    double total_val;   //总价格
+    //将短小的成员函数作为内联函数
+    void set_tot() {total_val = shares*share_val;}  //总价格的计算公式
+
+public:
+    void acquire(const char * co,int n,double pr);
+    void buy(int num,double price);
+    void sell(int num,double price);
+    void update(double price);
+    void show();
+};
+
+void Stock::acquire(const char* co,int n,double pr)
+{
+    std::strncpy(company,co,29);
+    company[29] = '\0';
+    if (n<0)
+    {
+        std::cerr<<"Number of shares cannot be negative."<<company<<"shares to 0.\n";
+        shares = 0;
+    }
+    else
+    {
+        shares = n;
+    }
+    share_val = pr;
+    set_tot();
+}
+
+void Stock::buy(int num,double price)
+{
+    if (num<0)
+    {
+        std::cerr<<"Number of shares cannot be negative.\n";
+    }
+    else
+    {
+        shares += num;
+        share_val = price;
+        set_tot();
+    }
+}
+
+void Stock::sell(int num,double price)
+{
+    if (num<0)
+    {
+        std::cerr<<"Number of shares cannot be negative.\n";
+    }
+    else if(num>shares)
+    {
+        std::cerr<<"You cannot sell more than you have.\n";
+    }
+    else
+    {
+        shares -= num;
+        share_val = price;
+        set_tot();
+    }
+}
+
+void Stock::update(double price)
+{
+    share_val = price;
+    set_tot();
+}
+
+void Stock::show()
+{
+    using std::cout;
+    using std::endl;
+    cout<<"Show:"<<endl;
+    cout<<"Company: "<<company<<endl;
+    cout<<"Shares: "<<shares<<endl;
+    cout<<"Share price: "<<share_val<<endl;
+    cout<<"Total worth: "<<total_val<<endl;
+
+}
+
+int main()
+{
+    using std::cout;
+    using std::ios_base;
+    Stock stock1;
+    stock1.acquire("BMI",20,12.5);
+    cout.setf(ios_base::fixed);
+    cout.precision(2);
+    cout.setf(ios_base::showpoint);
+    stock1.show();
+    stock1.buy(15,19.33);
+    stock1.show();
+    stock1.sell(30,21.11);
+    stock1.show();
+
+    return 0;
+}
+3.类构造函数
+没有声明类型和返回，参数名不能和类成员相同，被用来创建对象，但不能通过对象来调用。
+
+//这样就可以使用 Stock stock1 = {"BMI",20,12.5}的形式了
+Stock::Stock(const char* co,int n=0,double pr=0.0)
+{
+    std::strncpy(company,co,29);
+    company[29] = '\0';
+    if (n<0)
+    {
+        std::cerr<<"Number of shares cannot be negative."<<company<<"shares to 0.\n";
+        shares = 0;
+    }
+    else
+    {
+        shares = n;
+    }
+    share_val = pr;
+    set_tot();
+}
+
+4.析构函数
+作用：构造函数创建对象后，程序跟踪该对象，直到其过期。对象过期的时候，程序自动调析构函数。
+析构函数没有参数，可以没有声明和返回值。
+Stock::~Stock()
+{
+}
+
+5.可以把2中的代码拆开
+
+首先创建stock.h头文件，里面声明类
+#ifndef STOCK1_H_INCLUDED
+#define STOCK1_H_INCLUDED
+class Stock
+{
+private:
+    char company[30];   //手持股票属于哪家公司
+    int shares;         //手持股票数
+    double share_val;   //每一股的价格
+    double total_val;   //总价格
+    //将短小的成员函数作为内联函数
+    void set_tot() {total_val = shares*share_val;}  //总价格的计算公式
+
+public:
+    Stock();
+    Stock(const char * co,int n=0,double pr=0.0);
+    ~Stock();
+    void buy(int num,double price);
+    void sell(int num,double price);
+    void update(double price);
+    void show();
+};
+
+
+#endif // STOCK1_H_INCLUDED
+
+然后创建.cpp文件，在里面具体实现类中的函数
+#include<iostream>
+#include<cstring>
+#include"stock1.h"
+
+Stock::Stock()
+{
+    std::cout<<"Default called.\n";
+    std::strcpy(company,"No name");
+    shares = 0;
+    share_val = 0.0;
+    total_val = 0.0;
+}
+
+Stock::Stock(const char * co,int n,double pr)
+{
+    std::strncpy(company,co,29);
+    company[29] = '\0';
+    if (n<0)
+    {
+        std::cerr<<"Number of shares cannot be negative."<<company<<"shares to 0.\n";
+        shares = 0;
+    }
+    else
+    {
+        shares = n;
+    }
+    share_val = pr;
+    set_tot();
+}
+
+Stock::~Stock()
+{
+    std::cout<<"Bye "<<company<<std::endl;
+}
+
+void Stock::buy(int num,double price)
+{
+    if (num<0)
+    {
+        std::cerr<<"Number of shares cannot be negative.\n";
+    }
+    else
+    {
+        shares += num;
+        share_val = price;
+        set_tot();
+    }
+}
+
+void Stock::sell(int num,double price)
+{
+    if (num<0)
+    {
+        std::cerr<<"Number of shares cannot be negative.\n";
+    }
+    else if(num>shares)
+    {
+        std::cerr<<"You cannot sell more than you have.\n";
+    }
+    else
+    {
+        shares -= num;
+        share_val = price;
+        set_tot();
+    }
+}
+
+void Stock::update(double price)
+{
+    share_val = price;
+    set_tot();
+}
+
+void Stock::show()
+{
+    using std::cout;
+    using std::endl;
+    cout<<"Show:"<<endl;
+    cout<<"Company: "<<company<<endl;
+    cout<<"Shares: "<<shares<<endl;
+    cout<<"Share price: "<<share_val<<endl;
+    cout<<"Total worth: "<<total_val<<endl;
+
+}
+
+最后在main.cpp里面使用类
+#include <iostream>
+#include"stock1.h"
+
+int main()
+{
+    using std::cout;
+    using std::ios_base;
+    cout.precision(2);
+    cout.setf(ios_base::fixed,ios_base::floatfield);
+    cout.setf(ios_base::showpoint);
+
+    Stock stock1 = Stock("IBM",20,12.5);
+    stock1.show();
+    stock1.buy(15,19.33);
+    stock1.show();
+    stock1.sell(30,21.11);
+    stock1.show();
+
+    return 0;
+}
+
+！！！遇到undefined reference to是因为在创建stock.h和function.cpp文件的时候没有选择dd file to active project中的debug 和 release
