@@ -273,3 +273,6 @@ int main()
 }
 
 ！！！遇到undefined reference to是因为在创建stock.h和function.cpp文件的时候没有选择dd file to active project中的debug 和 release
+
+6.this指针
+指向用来调用成员函数的对象
