@@ -1,0 +1,277 @@
+友元函数是可以访问类的私有成员的非成员函数。
+创建友元函数：将其原型放在类声明中，并在前面加上friend关键字。（1.虽然在类中，但是不是成员函数。2.虽然是非成员函数，但是访问权限和成员函数
+的访问权限相同）。写函数原型的时候不用类名称（ClassName::）来限定。
+
+例如：
+1.将
+void Time::show() const
+{
+    std::cout<<hours<<", "<<minutes;
+}
+改为
+void operator<< (ostream & os,const Time & t)
+{
+    os<<t.hours<<", "<<t.minutes;
+}
+
+就可以在main()函数中，用cout<<total来代替total.show()
+
+2.如果改为
+声明为：friend std::ostream & operater<< (std::pstream & os,const Time & t);
+ostream & operator<< (ostream & os,const Time & t)
+{
+    os<<t.hours<<", "<<t.minutes;
+    return os;
+}
+就可以在main()函数中使用cout<<first<<second;
+
+3.一个例子
+创建头文件：
+#ifndef VECTOR_H_INCLUDED
+#define VECTOR_H_INCLUDED
+
+#include<iostream>
+namespace VECTOR
+{
+    class Vector
+    {
+    private:
+        double x;   //水平方向的值
+        double y;   //垂直方向的值
+        double mag; //vector的长度
+        double ang; //vector的方向
+        char mode;  //那种形式来表示，极值（p）还是坐标轴（r）
+        void set_mag();
+        void set_ang();
+        void set_x();
+        void set_y();
+    public:
+        Vector();
+        Vector(double n1,double n2,char form='r');
+        void Set(double n1,double n2,char form='r');
+        ~Vector();
+        //内联函数
+        double xval()const {return x;}
+        double yval()const {return y;}
+        double magval()const {return mag;}
+        double angval()const {return ang;}
+        void polar_mode();
+        void rect_mode();
+        //操作符重载
+        Vector operator+ (const Vector & b)const;
+        Vector operator- (const Vector & b)const;
+        Vector operator-  ()const;
+        Vector operator* (double n)const;
+        //友元函数
+        friend Vector operator* (double n,const Vector & a);
+        friend std::ostream & operator<< (std::ostream & os,const Vector & v);
+    };
+}
+
+
+#endif // VECTOR_H_INCLUDED
+
+创建函数原型：
+#include<iostream>
+#include<cmath>
+#include"Vector.h"
+using std::sin;
+using std::cos;
+using std::atan2;
+using std::cout;
+
+namespace VECTOR
+{
+const double Rad_to_deg = 57.296;
+
+//私有函数
+void Vector::set_mag()
+{
+    mag = sqrt(x*x+y*y);
+}
+void Vector::set_ang()
+{
+    if (x==0.0 && y==0.0)
+    {
+        ang = 0.0;
+    }
+    else
+    {
+        ang = atan2(y,x);
+    }
+}
+void Vector::set_x()
+{
+    x = mag*cos(ang);
+}
+void Vector::set_y()
+{
+    y = mag*sin(ang);
+}
+
+//公有函数
+Vector::Vector()
+{
+    x = y = mag = ang = 0.0;
+    mode = 'r';
+}
+Vector::Vector(double n1,double n2,char form)
+{
+    mode = form;
+    if (mode=='r' || mode=='R')
+    {
+        x = n1;
+        y = n2;
+        set_mag();
+        set_ang();
+    }
+    else if(mode=='p' || mode=='P')
+    {
+        mag = n1;
+        ang = n2/Rad_to_deg;
+        set_x();
+        set_y();
+    }
+    else
+    {
+        cout<<"Error argument to Vector()--";
+        cout<<"Vector set to 0.\n";
+        x = y = mag = ang = 0.0;
+        mode = 'r';
+    }
+
+}
+
+void Vector::Set(double n1,double n2,char form)
+{
+    mode = form;
+    if (mode=='r' || mode=='R')
+    {
+        x = n1;
+        y = n2;
+        set_mag();
+        set_ang();
+    }
+    else if(mode=='p' || mode=='P')
+    {
+        mag = n1;
+        ang = n2/Rad_to_deg;
+        set_x();
+        set_y();
+    }
+    else
+    {
+        cout<<"Error argument to Vector()--";
+        cout<<"Vector set to 0.\n";
+        x = y = mag = ang = 0.0;
+        mode = 'r';
+    }
+}
+
+Vector::~Vector()
+{
+
+}
+
+void Vector::polar_mode()
+{
+    mode = 'p';
+}
+
+void Vector::rect_mode()
+{
+    mode = 'r';
+}
+
+Vector Vector::operator+ (const Vector & b)const
+{
+    return Vector(x+b.x,y+b.y);
+}
+
+Vector Vector::operator- (const Vector & b)const
+{
+    return Vector(x-b.x,y-b.y);
+}
+
+Vector Vector::operator- ()const
+{
+    return Vector(-x,-y);
+}
+
+Vector Vector::operator* (double n)const
+{
+    return Vector(n*x,n*y);
+}
+
+//友元函数
+Vector operator* (double n, const Vector & a)
+{
+    return a*n;
+}
+
+//打印
+std::ostream & operator<<(std::ostream & os,const Vector & v)
+{
+    if (v.mode=='r' || v.mode=='R')
+    {
+        os<<"(x,y)=("<<v.x<<","<<v.y<<")";
+    }
+    else if (v.mode=='p' || v.mode=='P')
+    {
+        os<<"(m,a)=("<<v.mag<<","<<v.ang<<")";
+    }
+    else
+    {
+        os<<"Vector object mode is invalid.";
+    }
+    return os;
+}
+}
+
+主函数：
+#include <iostream>
+#include<cstdlib>
+#include<ctime>
+#include"Vector.h"
+
+using namespace std;
+
+int main()
+{
+    using VECTOR::Vector;
+    srand(time(0));
+
+    double direction;
+    Vector step;
+    Vector result(0.0,0.0);
+    unsigned long steps = 0;
+    double target;
+    double dstep;
+
+    cout<<"Enter step distance(q to quit): ";
+    while (cin>>target)
+    {
+        cout<<"Enter step length: ";
+        if (!(cin>>dstep))
+        {
+            break;
+        }
+        while (result.magval()<target)
+        {
+            direction = rand()%360;     //朝360°的任意方向
+            step.Set(dstep,direction,'p');  //生成一个向量
+            result =result+step; //把该向量加上原向量
+            steps += 1; //记录走得步数
+        }
+        cout<<"After "<<steps<<" steps, the subject has the following location:\n";
+        cout<<result<<endl;
+        result.polar_mode();
+        cout<<"or\n"<<result<<endl;
+        cout<<"Average outward distance per step: "<<result.magval()/steps<<endl;
+        steps = 0;
+        result.Set(0.0,0.0);
+        cout<<"Enter step distance(q to quit): ";
+    }
+    return 0;
+}
+
