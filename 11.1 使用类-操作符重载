@@ -1,0 +1,5 @@
+形如：
+operator op(argument-ist)
+
+例如，用Time operator+ (const Time & t) const: 来代替Time Sum(const  & t) const;
+就可以在main()中用total = first+seconde来代替total=first.Sum(second)
