@@ -1,0 +1,103 @@
+构造函数可以使某种类型->类类型，转换函数可以类类型->某种类型。
+转换函数形如：
+operator typename();
+需要注意：
+    （1）必须是类方法
+    （2）不能指定返回类型
+    （3）不能有参数
+
+例如 ：
+创建头文件：
+#ifndef STONEWT_H_INCLUDED
+#define STONEWT_H_INCLUDED
+
+class Stonewt
+{
+private:
+    enum {Lbs_per_stn = 14};    //每块的重量
+    int stone;  //数量
+    double pds_left;    //分数磅
+    double pounds;
+public:
+    Stonewt(double lbs);
+    Stonewt(int stn,double lbs);
+    Stonewt();
+    ~Stonewt();
+
+    void show_lbs()const;
+    void show_stn()const;
+
+    //转换函数，函数前没有声明返回值（void，int等）
+    operator int()const;    //转换为int类型
+    operator double()const;
+};
+
+
+#endif // STONEWT_H_INCLUDED
+
+创建函数原型文件：
+#include<iostream>
+#include"stonewt.h"
+
+using namespace std;
+
+Stonewt::Stonewt(double lbs)
+{
+    stone = int(lbs)/Lbs_per_stn;
+    pds_left = int(lbs)%Lbs_per_stn+lbs-int(lbs);
+    pounds = lbs;
+}
+
+Stonewt::Stonewt(int stn,double lbs)
+{
+    stone = stn;
+    pds_left = lbs;
+    pounds = stn*Lbs_per_stn+lbs;
+}
+
+Stonewt::Stonewt()
+{
+    stone = pounds = pds_left = 0;
+}
+
+Stonewt::~Stonewt()
+{
+}
+
+void Stonewt::show_stn()const
+{
+    cout<<"Stone: "<<stone<<", pounds: "<<pounds<<endl;
+}
+
+void Stonewt::show_lbs()const
+{
+    cout<<"pounds: "<<pounds<<endl;
+}
+
+Stonewt::operator int()const
+{
+    return int (pounds+0.5);
+}
+
+Stonewt::operator double()const
+{
+    return pounds;
+}
+
+
+主函数：
+#include <iostream>
+#include"stonewt.h"
+
+using namespace std;
+
+int main()
+{
+    Stonewt poppins(9,2.8);
+    double p_wt = poppins;
+    cout<<"Convert to double ->";
+    cout<<"Poppins: "<<p_wt<<" pounds."<<endl;
+    cout<<"Convert to int ->";
+    cout<<"Poppins: "<<int(poppins)<<" pounds."<<endl;
+    return 0;
+}
