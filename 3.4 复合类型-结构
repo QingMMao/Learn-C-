@@ -16,7 +16,7 @@ struct perk
     char ca[12];
 }xiao_liu,xiao_liao;
 
-//在定影struct之后创建变量并初始化
+//在定义struct之后创建变量并初始化
 struct perks
 {
     int key_number;
@@ -28,7 +28,7 @@ struct perks
 };
 
 //先定义struct，然后在函数中使用
-struct inflatable   //外部申明可悲所有函数使用，内部申明只可被当前函数使用
+struct inflatable   //外部申明可被所有函数使用，内部申明只可被当前函数使用
 {
     /*std::    是个名称空间标示符，C++标准库中的函数或者对象都是在命名空间std中定义的，
     所以我们要使用标准函数库中的函数或对象都要使用std来限定。
@@ -59,3 +59,4 @@ int main()
         {
             "Godzilla",2000,565.99
         }
+
