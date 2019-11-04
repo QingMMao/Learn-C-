@@ -34,7 +34,7 @@ int main()
 
     ++p_arr;   //指针加一，pt = pt+(sizeof(type_p_arr))*1
     cout<<p_arr<<","<<*p_arr<<endl;
-    p_arr--;   //指针加一，pt = pt-(sizeof(type_p_arr))*1
+    p_arr--;   //指针减一，pt = pt-(sizeof(type_p_arr))*1
     cout<<p_arr<<","<<*p_arr<<endl;
 
     cout<<*++p_arr<<endl; //先将指针加一，再取值
