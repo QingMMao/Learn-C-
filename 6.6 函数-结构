@@ -41,7 +41,7 @@ void show_time(travel_time t)
 }
 
 2.传递地址
-一笛卡尔坐标转换为极坐标为例。
+以笛卡尔坐标转换为极坐标为例。
 
 #include<iostream>
 #include<cmath>
