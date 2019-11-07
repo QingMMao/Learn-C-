@@ -1,0 +1,232 @@
+创建头文件
+#ifndef QUEUE_H_INCLUDED
+#define QUEUE_H_INCLUDED
+
+class Customer
+{
+private:
+    long arrive;    //顾客到达时间
+    int processtime;    //顾客办理时间
+public:
+    Customer(){arrive = processtime = 0;}   //达到时间和办理时间都初始化为0
+    void Set(long when);
+    long when()const {return arrive;}
+    int ptime()const {return processtime;}
+};
+
+typedef Customer Item;
+
+class Queue
+{
+private:
+    struct Node
+    {
+        Item item;
+        struct Node * next;
+    };
+    enum {Q_SIZE = 10};
+    //双向链表
+    Node * Front;
+    Node * Rear;
+    int items;
+    const int qsize;
+    Queue(const Queue & q):qsize(0){}
+    Queue & operator = (const Queue & q){return *this;}
+public:
+    Queue(int qs=Q_SIZE);
+    ~Queue();
+    bool isempty()const;    //队列是否为空
+    bool isfull()const;     //队列是否为满
+    int queuecount()const;  //队列当前数量
+    bool enqueue(const Item &item); //进队列
+    bool dequeue(Item &item);  //移出队列
+
+};
+
+#endif // QUEUE_H_INCLUDED
+
+
+函数原型：
+#include<iostream>
+#include<cstdlib>
+#include<ctime>
+#include"queue.h"
+
+Queue::Queue(int qs):qsize(qs)  //成员初始化列表：位于参数列表的右括号之后，函数体的左括号之前。格式为：数据成员名称（初始化值）
+{
+    Front = Rear = NULL;
+    items = 0;
+}
+
+Queue::~Queue()
+{
+    Node * temp;
+    //挨个释放结点
+    while (Front!=NULL)
+    {
+        temp = Front;
+        Front = Front->next;
+        delete temp;
+    }
+}
+
+bool Queue::isempty()const
+{
+    return items==0;
+}
+
+bool Queue::isfull()const
+{
+    return items==qsize;
+}
+
+int Queue::queuecount()const
+{
+    return items;
+}
+
+bool Queue::enqueue(const Item & item)
+{
+    if (isfull())
+    {
+        return false;
+    }
+    Node * add = new Node;
+    if (add==NULL)
+    {
+        return false;
+    }
+    add->item = item;
+    add->next = NULL;
+    items++;
+    if (Front==NULL)
+    {
+        Front = add;
+    }
+    else
+    {
+        Rear->next = add;
+    }
+    Rear = add;
+    return true;
+}
+
+bool Queue::dequeue(Item & item)
+{
+    if (Front==NULL)
+    {
+        return false;
+    }
+    item = Front->item; //出队列
+    items--;
+    Node * temp;
+    temp = Front;
+    Front = Front->next;
+    delete temp;
+    if (items==0)
+    {
+        Rear = NULL;
+    }
+    return true;
+}
+
+void Customer::Set(long when)
+{
+    processtime = rand()%3+1;
+    arrive = when;
+}
+
+
+使用函数：
+#include <iostream>
+#include<cstdlib>
+#include<ctime>
+#include"queue.h"
+
+const int MIN_PER_HOUR = 60;
+bool newcustomer(double x);
+using namespace std;
+
+int main()
+{
+    std::srand(std::time(0));
+
+    cout<<"Enter maximum size of queue: ";  //限制队列的人数
+    int qs;
+    cin>>qs;
+    Queue line(qs); //初始化队列
+
+    cout<<"Enter the number of simulation hours: ";
+    int hours;
+    cin>>hours;
+    long cycleimit = MIN_PER_HOUR*hours;    //一共有多少分钟
+
+    cout<<"Enter the average number of customers per hour: ";
+    double perhour;
+    cin>>perhour;   //平均一小时能把你多少顾客请求
+    double min_per_cust;
+    min_per_cust = MIN_PER_HOUR/perhour;    //每个顾客用多少分钟
+
+    Item temp;  //新来顾客信息
+    long turnaways = 0;  //经过了多少轮
+    long customer = 0;  //这段时间内总共有多少顾客来了
+    long served = 0;    //已经办理完的顾客数量
+    long sum_line = 0;  //每一轮的队伍长度总和
+    int wait_time = 0;  //从现在开始到机器空闲的时间
+
+    long line_wait = 0;
+
+    for (int cycle=0;cycle<cycleimit;cycle++)   //每一分钟
+    {
+        if (newcustomer(min_per_cust))  //有新的顾客来
+        {
+            if (line.isfull())  //队列满了
+            {
+                turnaways++;    //这一轮满了
+            }
+            else
+            {
+                customer++; //队列没满
+                temp.Set(cycle);    //达到时间
+                line.enqueue(temp); //加入队列中
+            }
+        }
+        if (wait_time<=0 && !line.isempty())    //不用再等待，并且队列不为空
+        {
+            line.dequeue(temp); //出队列
+            wait_time = temp.ptime();   //当前办理时间
+            line_wait += cycle-temp.when(); //从现在开始到队列最后一个人办理完的时间
+            served++;   //
+        }
+        if (wait_time>0) //还需要再等待
+        {
+            wait_time--;
+        }
+        sum_line += line.queuecount();
+    }
+
+    if (customer>0)
+    {
+        cout<<"Customers accepted: "<<customer<<endl;
+        cout<<"Customer served: "<<served<<endl;
+        cout<<"turn aways: "<<turnaways<<endl;
+        cout.setf(ios_base::fixed,ios_base::floatfield);
+        cout.setf(ios_base::showpoint);
+        cout<<(double)sum_line/cycleimit<<endl;
+        cout<<"Average wait time: "<<(double)line_wait/served<<" minutes.\n";
+    }
+    else
+    {
+        cout<<"No cutomers."<<endl;
+    }
+
+    if (customer)
+    return 0;
+}
+
+//x是平均时间（以分钟为基础），看看新顾客在这一时刻是否出现
+bool newcustomer(double x)
+{
+    return (rand()*x/RAND_MAX<1);
+
+}
