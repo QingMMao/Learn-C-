@@ -182,7 +182,7 @@ int main()
         {
             if (line.isfull())  //队列满了
             {
-                turnaways++;    //这一轮满了
+                turnaways++;    //这一轮满了，顾客不想排队，走了
             }
             else
             {
@@ -227,6 +227,6 @@ int main()
 //x是平均时间（以分钟为基础），看看新顾客在这一时刻是否出现
 bool newcustomer(double x)
 {
-    return (rand()*x/RAND_MAX<1);
+    return (rand()*x/RAND_MAX<1); //产生随机小数时使用RAND_MAX，
 
 }
