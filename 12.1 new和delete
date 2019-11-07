@@ -1,0 +1,52 @@
+在构造函数中使用new：可以在构造函数使用new初始化指针，在另外一个构造函数中将指针初始化为空（NULL或0）
+
+#include<iostream>
+#include<string>
+#include<new>
+
+using namespace std;
+const int BUF=512;
+
+class Testing
+{
+private:
+    string words;
+    int number;
+public:
+    Testing(const string & s="Testing",int n=0)
+    {words = s;number = n;}
+    ~Testing(){cout<<words<<" destroyed"<<endl;}
+    void show()const {cout<<words<<", "<<number<<endl;}
+
+};
+
+int main()
+{
+    char * buffer = new char[BUF];  //获得一块缓冲区
+    Testing *p1,*p2;
+    p1 = new (buffer) Testing;  //在缓冲区
+    p2 = new Testing("Heap1",20);    //在栈顶
+
+    cout<<"Memory block address: \n"<<"buffer: "<<(void *)buffer<<"; heap: "<<p2<<endl;
+    cout<<"Memory contents:\n";
+    cout<<p1<<": ";
+    p1->show();
+    cout<<p2<<": ";
+    p2->show();
+
+    Testing *p3,*p4;
+//    p3 = new (buffer) Testing("Bad idea.",6);   //之前的就被缓冲掉了
+    p3 = new(buffer+sizeof(Testing)) Testing("Better idea.",6); //由于将本次的分配起始位置后移了，不会缓冲掉之前的
+    p4 = new Testing("Heap2",10);   //在栈顶，之前的还在
+    cout<<"Memory contents:\n";
+    cout<<p3<<": ";
+    p3->show();
+    cout<<p4<<": ";
+    p4->show();
+
+    delete p2;
+    delete p4;
+    delete [] buffer;
+
+    return 0;
+}
