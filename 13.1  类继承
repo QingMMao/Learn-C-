@@ -182,6 +182,7 @@ int main()
     return 0;
 }
 
+使用虚析构函数可以确保正确的析构函数序列被调用。
 用虚函数，根据引用或者指针指向的对象类型来选择具体方法：
 #include <iostream>
 #include"brass.h"
