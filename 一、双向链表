@@ -1,0 +1,146 @@
+看到一篇帖子，面试的时候让手写双向链表。尝试着去写，然后发现还是得看看书参照一下，道阻且长~
+
+#include<iostream>
+using namespace std;
+
+struct ListNode
+{
+    int value;
+    ListNode* prior;
+    ListNode* next;
+};
+
+ListNode* CreateLink();
+//ListNode* InsertLink(ListNode* head,int nodeData);
+void InsertLink(ListNode* head,int nodeData);
+void DeleteLink(ListNode* head,int nodeData);
+void ChangeLink(ListNode* head,int nodeData,int newData);
+
+int main()
+{
+    ListNode* newlist;
+    newlist = CreateLink(); //创建一个数组
+
+    //挨个儿输出结点的值
+    ListNode* p = newlist;
+    while (p)
+    {
+        cout<<p->value<<endl;
+        p = p->next;
+    }
+
+    //增添结点
+    for (int i=100;i<110;i++)
+    {
+//        newlist = InsertLink(newlist,i);
+        InsertLink(newlist,i);
+    }
+    //删除节点
+    DeleteLink(newlist,99);
+    DeleteLink(newlist,100);
+    //更改结点
+    ChangeLink(newlist,9,200);
+    ChangeLink(newlist,400,200);
+
+    //挨个儿输出结点的值
+    ListNode* q = newlist;
+    while (q)
+    {
+        cout<<q->value<<endl;
+        q = q->next;
+    }
+
+    return 0;
+}
+ListNode* CreateLink()
+{
+    ListNode* head = new ListNode;
+    head->value = 0;
+    head->next = NULL;
+    head->prior = NULL;
+
+    ListNode* p = head;
+    for (int i=1;i<10;i++)
+    {
+        ListNode* newNode = new ListNode;
+        newNode->value = i;
+        newNode->prior = p;
+        newNode->next = NULL;
+        p->next = newNode;
+        p = newNode;
+    }
+    return head;
+
+}
+
+void InsertLink(ListNode* head,int nodeData)
+{
+    ListNode* p = head;
+    while(p->next)
+    {
+        p = p->next;
+    }
+    ListNode* newNode = new ListNode;
+    newNode->value = nodeData;
+    newNode->next = NULL;
+    newNode->prior = p;
+    p->next = newNode;
+
+//    return head;
+}
+
+void DeleteLink(ListNode* head,int nodeData)
+{
+    ListNode* p = head;
+    while (p && p->value!=nodeData)
+    {
+        p = p->next;
+    }
+    if (p && p->value==nodeData)
+    {
+        cout<<"Delete "<<nodeData<<" in link."<<endl;
+        if (p==head)
+        {
+            if (head->next)
+            {
+                head = head->next;
+            }
+            else
+            {
+                head = NULL;
+            }
+        }
+        else if(p->next==NULL)
+        {
+            p->prior = NULL;
+        }
+        else
+        {
+            p->prior->next = p->next;
+            p->next->prior = p->prior;
+        }
+    }
+    else
+    {
+        cout<<nodeData<<" is not in link."<<endl;
+    }
+}
+
+void ChangeLink(ListNode* head,int nodeData,int newData)
+{
+    ListNode* p = head;
+    while (p && p->value!=nodeData)
+    {
+        p = p->next;
+    }
+    if (p)
+    {
+        cout<<"Change "<<nodeData<<" to "<<newData<<endl;
+        p->value = newData;
+    }
+    else
+    {
+        cout<<nodeData<<" is not in link."<<endl;
+    }
+}
+
