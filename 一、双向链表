@@ -12,9 +12,11 @@ struct ListNode
 
 ListNode* CreateLink();
 //ListNode* InsertLink(ListNode* head,int nodeData);
-void InsertLink(ListNode* head,int nodeData);
-void DeleteLink(ListNode* head,int nodeData);
-void ChangeLink(ListNode* head,int nodeData,int newData);
+ListNode* InsertLink_ToHead(ListNode* head,int nodeData);   //插入到头部
+void InsertLink_Specify(ListNode* head,int specifyData,int nodeData);   //插入到指定结点后面
+void InsertLink_ToTail(ListNode* head,int nodeData);    //插入到尾部
+void DeleteLink(ListNode* head,int nodeData);   //删除指定结点
+void ChangeLink(ListNode* head,int nodeData,int newData);   //更改指定结点
 
 int main()
 {
@@ -22,27 +24,31 @@ int main()
     newlist = CreateLink(); //创建一个数组
 
     //挨个儿输出结点的值
-    ListNode* p = newlist;
-    while (p)
-    {
-        cout<<p->value<<endl;
-        p = p->next;
-    }
+//    ListNode* p = newlist;
+//    while (p)
+//    {
+//        cout<<p->value<<endl;
+//        p = p->next;
+//    }
 
     //增添结点
     for (int i=100;i<110;i++)
     {
 //        newlist = InsertLink(newlist,i);
-        InsertLink(newlist,i);
+        InsertLink_ToTail(newlist,i);
     }
+    for (int i=-10;i<-5;i++)
+    {
+//        newlist = InsertLink(newlist,i);
+        newlist = InsertLink_ToHead(newlist,i);
+    }
+
     //删除节点
     DeleteLink(newlist,99);
     DeleteLink(newlist,100);
     //更改结点
     ChangeLink(newlist,9,200);
     ChangeLink(newlist,400,200);
-
-    //挨个儿输出结点的值
     ListNode* q = newlist;
     while (q)
     {
@@ -73,8 +79,65 @@ ListNode* CreateLink()
 
 }
 
-void InsertLink(ListNode* head,int nodeData)
+ListNode* InsertLink_ToHead(ListNode* head,int nodeData)
 {
+    if (head==NULL)
+    {
+        head->value = nodeData;
+        head->next = NULL;
+        head->prior = NULL;
+        return head;
+    }
+    ListNode* p = new ListNode;
+    p->value = nodeData;
+    p->prior = NULL;
+    p->next = head;
+    head->prior = p;
+    head = p;
+
+    return head;
+}
+
+void InsertLink_Specify(ListNode* head,int specifyData,int nodeData)
+{
+    if (head==NULL)
+    {
+        head->value = nodeData;
+        head->next = NULL;
+        head->prior = NULL;
+        return;
+    }
+    ListNode* p = head;
+    while (p and p->value!=specifyData)
+    {
+        p = p->next;
+    }
+    if (p)
+    {
+        ListNode* q = new ListNode;
+        q->value = nodeData;
+        q->prior = p;
+        if (p->next)
+        {
+            p->next->prior = q;
+            q->next = p->next;
+        }
+        p->next = q;
+    }
+    else
+    {
+        cout<<specifyData<<" is not in link."<<endl;
+    }
+}
+void InsertLink_ToTail(ListNode* head,int nodeData)
+{
+    if (head==NULL)
+    {
+        head->value = nodeData;
+        head->next = NULL;
+        head->prior = NULL;
+        return;
+    }
     ListNode* p = head;
     while(p->next)
     {
@@ -91,6 +154,10 @@ void InsertLink(ListNode* head,int nodeData)
 
 void DeleteLink(ListNode* head,int nodeData)
 {
+    if (head==NULL)
+    {
+        return;
+    }
     ListNode* p = head;
     while (p && p->value!=nodeData)
     {
@@ -128,6 +195,10 @@ void DeleteLink(ListNode* head,int nodeData)
 
 void ChangeLink(ListNode* head,int nodeData,int newData)
 {
+    if (head==NULL)
+    {
+        return;
+    }
     ListNode* p = head;
     while (p && p->value!=nodeData)
     {
@@ -143,4 +214,6 @@ void ChangeLink(ListNode* head,int nodeData,int newData)
         cout<<nodeData<<" is not in link."<<endl;
     }
 }
+
+
 
